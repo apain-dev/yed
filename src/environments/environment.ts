@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  imgurApi: 'https://api.imgur.com',
+  clientId: 'ac59dedfea20050',
+  clientSecret: '0edee87217a3ec01fe66a1976339dda9f1029f7d',
+  redirectUri: 'http://localhost:4200/callback'
 };
 
 /*

@@ -1,0 +1,8 @@
+<div class="grid-container">
+  <h1 class="mat-h1">Dashboard</h1>
+  <button mat-button (click)="authorize()">Imgur oauth</button>
+  <mat-card>
+    <p>{{helper}}</p>
+    <pre>{{error | json}}</pre>
+  </mat-card>
+</div>
