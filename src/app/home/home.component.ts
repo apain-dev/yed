@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {environment} from '../../environments/environment';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 export interface TokenResponse {
   access_token: string;
@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   private authorizeUrl = `${environment.imgurApi}/oauth2/authorize`;
   public helper = 'Veuillez clicker sur le bouton imgur';
   public error;
-
+  public account: any;
   constructor(private route: ActivatedRoute, private httpService: HttpClient, private router: Router) {
   }
 
@@ -34,6 +34,7 @@ export class HomeComponent implements OnInit {
         this.getToken(params.code);
       }
     });
+
   }
 
   public authorize() {
@@ -48,7 +49,14 @@ export class HomeComponent implements OnInit {
       grant_type: 'authorization_code',
     }).subscribe((response: TokenResponse) => {
       this.helper = `Token obtenu avec succés: ${response.access_token}`;
+      localStorage.setItem('username', response.account_username);
+      localStorage.setItem('token', response.access_token);
       this.clearQuery();
+      this.getAccount().subscribe((response: any) => {
+        this.account = response.data;
+      }, (err) => {
+        console.log(err);
+      });
     }, (err) => {
       this.helper = 'Une erreur est survenue';
       this.error = err;
@@ -60,5 +68,12 @@ export class HomeComponent implements OnInit {
       ['.'],
       {relativeTo: this.route, queryParams: {}}
     );
+  }
+
+  getAccount() {
+    const headers = new HttpHeaders({
+      Authorization: 'Bearer ' + localStorage.getItem('token'),
+    });
+    return this.httpService.get(`${environment.imgurApi}/3/account/${localStorage.getItem('username')}`, {headers});
   }
 }
